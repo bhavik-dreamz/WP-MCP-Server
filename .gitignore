@@ -1,0 +1,22 @@
+# Composer
+/vendor/
+
+# Node
+/node_modules/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDEs
+.idea/
+.vscode/
+
+# Logs
+/logs/
+
+# Environment
+.env
+
+# Built assets
+/dist/
