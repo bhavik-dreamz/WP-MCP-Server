@@ -36,7 +36,7 @@ class Tool_CPT {
             'post_type' => $post_type,
             'posts_per_page' => $per_page,
             'paged' => max( 1, $page ),
-            'post_status' => 'any',
+            'post_status' => 'publish',
         );
 
         if ( is_array( $meta_filters ) ) {

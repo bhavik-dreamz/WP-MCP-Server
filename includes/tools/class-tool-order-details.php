@@ -11,6 +11,10 @@ class Tool_Order_Details {
             return array( 'error' => 'woocommerce_missing' );
         }
 
+        if ( ! $user->has_cap( 'manage_woocommerce' ) ) {
+            return array( 'error' => 'insufficient_capability' );
+        }
+
         $order_id = isset( $params['order_id'] ) ? intval( $params['order_id'] ) : 0;
         if ( ! $order_id ) {
             return array( 'error' => 'order_id required' );
