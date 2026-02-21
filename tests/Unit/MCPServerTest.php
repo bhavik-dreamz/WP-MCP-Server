@@ -54,6 +54,7 @@ class MCPServerTest extends TestCase {
     public function test_tools_call_without_tool_param_throws_exception(): void {
         $server = new MCP_Server( $this->user );
         $this->expectException( \Exception::class );
+        // MCP spec uses 'name', not 'tool'; missing 'name' must throw.
         $server->handle_raw( '{"method":"tools/call","params":{}}' );
     }
 
@@ -62,7 +63,8 @@ class MCPServerTest extends TestCase {
 
         $server = new MCP_Server( $this->user );
         $this->expectException( \Exception::class );
-        $server->handle_raw( '{"method":"tools/call","params":{"tool":"nonexistent"}}' );
+        // 'name' is the MCP-compliant parameter name.
+        $server->handle_raw( '{"method":"tools/call","params":{"name":"nonexistent"}}' );
     }
 
     // ------------------------------------------------------------------

@@ -29,7 +29,7 @@ class Tool_Posts {
             'post_type' => $post_type,
             'posts_per_page' => $per_page,
             'paged' => max( 1, $page ),
-            'post_status' => 'any',
+            'post_status' => 'publish',
         );
 
         $wpq = new \WP_Query( $args );

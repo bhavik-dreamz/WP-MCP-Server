@@ -11,6 +11,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 class REST_Controller {
     const NAMESPACE = 'wp-mcp/v1';
 
+    /** Cached authenticated user set by permission_mcp, consumed by handle_mcp. */
+    private static $mcp_user = null;
+
     public static function init() {
         add_action( 'rest_api_init', array( __CLASS__, 'register_routes' ) );
     }
@@ -46,13 +49,17 @@ class REST_Controller {
 
     public static function permission_mcp( WP_REST_Request $request ) {
         $auth = Auth::authenticate_request( $request );
-        return ! is_wp_error( $auth );
+        if ( is_wp_error( $auth ) ) {
+            return false;
+        }
+        self::$mcp_user = $auth;
+        return true;
     }
 
     public static function handle_mcp( WP_REST_Request $request ) {
-        $auth = Auth::authenticate_request( $request );
-        if ( is_wp_error( $auth ) ) {
-            return rest_ensure_response( $auth );
+        $auth = self::$mcp_user;
+        if ( ! $auth ) {
+            return rest_ensure_response( new \WP_Error( 'not_authenticated', __( 'Not authenticated', 'wp-mcp-server' ), array( 'status' => 401 ) ) );
         }
 
         // Read raw body

@@ -65,20 +65,111 @@ class MCP_Server {
         $all_tools = array(
             'search_posts' => array(
                 'name' => 'search_posts',
+                'description' => 'Search WordPress posts by keyword with optional pagination.',
                 'inputSchema' => array(
-                    'query' => 'string',
-                    'post_type' => 'string',
-                    'per_page' => 'integer',
-                    'page' => 'integer',
+                    'type' => 'object',
+                    'properties' => array(
+                        'query'     => array( 'type' => 'string',  'description' => 'Search keyword' ),
+                        'post_type' => array( 'type' => 'string',  'description' => 'Post type (default: post)' ),
+                        'per_page'  => array( 'type' => 'integer', 'description' => 'Results per page (default: 10)' ),
+                        'page'      => array( 'type' => 'integer', 'description' => 'Page number (default: 1)' ),
+                    ),
                 ),
             ),
-            'search_pages' => array('name' => 'search_pages'),
-            'search_custom_post_types' => array('name' => 'search_custom_post_types'),
-            'search_products' => array('name' => 'search_products'),
-            'search_product_categories' => array('name' => 'search_product_categories'),
-            'get_orders' => array('name' => 'get_orders'),
-            'get_order_details' => array('name' => 'get_order_details'),
-            'recommend_products' => array('name' => 'recommend_products'),
+            'search_pages' => array(
+                'name' => 'search_pages',
+                'description' => 'Search WordPress pages by keyword.',
+                'inputSchema' => array(
+                    'type' => 'object',
+                    'properties' => array(
+                        'query'    => array( 'type' => 'string',  'description' => 'Search keyword' ),
+                        'per_page' => array( 'type' => 'integer', 'description' => 'Results per page (default: 10)' ),
+                        'page'     => array( 'type' => 'integer', 'description' => 'Page number (default: 1)' ),
+                    ),
+                ),
+            ),
+            'search_custom_post_types' => array(
+                'name' => 'search_custom_post_types',
+                'description' => 'Search allowed custom post types with optional meta filters.',
+                'inputSchema' => array(
+                    'type' => 'object',
+                    'required' => array( 'post_type' ),
+                    'properties' => array(
+                        'post_type'    => array( 'type' => 'string',  'description' => 'Custom post type slug (required)' ),
+                        'query'        => array( 'type' => 'string',  'description' => 'Search keyword' ),
+                        'meta_filters' => array( 'type' => 'array',   'description' => 'Array of {key, value} meta filter objects' ),
+                        'per_page'     => array( 'type' => 'integer', 'description' => 'Results per page (default: 10)' ),
+                        'page'         => array( 'type' => 'integer', 'description' => 'Page number (default: 1)' ),
+                    ),
+                ),
+            ),
+            'search_products' => array(
+                'name' => 'search_products',
+                'description' => 'Search WooCommerce products with optional price and stock filters.',
+                'inputSchema' => array(
+                    'type' => 'object',
+                    'properties' => array(
+                        'query'       => array( 'type' => 'string',  'description' => 'Search keyword' ),
+                        'category_id' => array( 'type' => 'integer', 'description' => 'Filter by product category ID' ),
+                        'min_price'   => array( 'type' => 'number',  'description' => 'Minimum price filter' ),
+                        'max_price'   => array( 'type' => 'number',  'description' => 'Maximum price filter' ),
+                        'in_stock'    => array( 'type' => 'boolean', 'description' => 'Only return in-stock products' ),
+                        'per_page'    => array( 'type' => 'integer', 'description' => 'Results per page (default: 10)' ),
+                        'page'        => array( 'type' => 'integer', 'description' => 'Page number (default: 1)' ),
+                    ),
+                ),
+            ),
+            'search_product_categories' => array(
+                'name' => 'search_product_categories',
+                'description' => 'List or search WooCommerce product categories.',
+                'inputSchema' => array(
+                    'type' => 'object',
+                    'properties' => array(
+                        'query'     => array( 'type' => 'string',  'description' => 'Search keyword' ),
+                        'parent_id' => array( 'type' => 'integer', 'description' => 'Filter by parent category ID' ),
+                        'per_page'  => array( 'type' => 'integer', 'description' => 'Results per page (default: 20)' ),
+                    ),
+                ),
+            ),
+            'get_orders' => array(
+                'name' => 'get_orders',
+                'description' => 'List WooCommerce orders with optional status, customer and date filters.',
+                'inputSchema' => array(
+                    'type' => 'object',
+                    'properties' => array(
+                        'status'      => array( 'type' => 'string',  'description' => 'Order status (e.g. processing, completed)' ),
+                        'customer_id' => array( 'type' => 'integer', 'description' => 'Filter by customer user ID' ),
+                        'date_from'   => array( 'type' => 'string',  'description' => 'Start date (YYYY-MM-DD)' ),
+                        'date_to'     => array( 'type' => 'string',  'description' => 'End date (YYYY-MM-DD)' ),
+                        'per_page'    => array( 'type' => 'integer', 'description' => 'Results per page (default: 10)' ),
+                        'page'        => array( 'type' => 'integer', 'description' => 'Page number (default: 1)' ),
+                    ),
+                ),
+            ),
+            'get_order_details' => array(
+                'name' => 'get_order_details',
+                'description' => 'Get full details (line items, billing, shipping, notes) of a WooCommerce order.',
+                'inputSchema' => array(
+                    'type' => 'object',
+                    'required' => array( 'order_id' ),
+                    'properties' => array(
+                        'order_id' => array( 'type' => 'integer', 'description' => 'WooCommerce order ID (required)' ),
+                    ),
+                ),
+            ),
+            'recommend_products' => array(
+                'name' => 'recommend_products',
+                'description' => 'Recommend WooCommerce products using related, upsell, crosssell, bestseller, or new_arrivals strategies.',
+                'inputSchema' => array(
+                    'type' => 'object',
+                    'properties' => array(
+                        'strategy'    => array( 'type' => 'string',  'description' => 'Recommendation strategy: related, upsell, crosssell, bestseller, new_arrivals (default: related)' ),
+                        'product_id'  => array( 'type' => 'integer', 'description' => 'Source product ID (required for related, upsell, crosssell)' ),
+                        'category_id' => array( 'type' => 'integer', 'description' => 'Filter by category ID' ),
+                        'limit'       => array( 'type' => 'integer', 'description' => 'Maximum number of results (default: 5)' ),
+                    ),
+                ),
+            ),
         );
 
         $tools = array();
@@ -98,11 +189,11 @@ class MCP_Server {
     }
 
     public function handle_tools_call( $params = array() ) {
-        if ( empty( $params['tool'] ) ) {
-            throw new \Exception( 'tool parameter required' );
+        if ( empty( $params['name'] ) ) {
+            throw new \Exception( 'name parameter required' );
         }
-        $tool = sanitize_text_field( $params['tool'] );
-        $args = $params['args'] ?? array();
+        $tool = sanitize_text_field( $params['name'] );
+        $args = $params['arguments'] ?? array();
 
         $mapping = array(
             'search_posts' => '\\WP_MCP\\Tools\\Tool_Posts',

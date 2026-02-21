@@ -11,6 +11,10 @@ class Tool_Orders {
             return array( 'error' => 'woocommerce_missing' );
         }
 
+        if ( ! $user->has_cap( 'manage_woocommerce' ) ) {
+            return array( 'error' => 'insufficient_capability' );
+        }
+
         $status = sanitize_text_field( $params['status'] ?? '' );
         $customer_id = isset( $params['customer_id'] ) ? intval( $params['customer_id'] ) : 0;
         $date_from = sanitize_text_field( $params['date_from'] ?? '' );

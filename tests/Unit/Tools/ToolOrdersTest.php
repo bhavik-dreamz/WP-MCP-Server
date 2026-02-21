@@ -18,6 +18,18 @@ class ToolOrdersTest extends TestCase {
         $this->assertSame( 'woocommerce_missing', $result['error'] );
     }
 
+    public function test_returns_error_when_user_lacks_capability(): void {
+        Functions\when( 'wc_get_orders' )->justReturn( array() );
+
+        $user = new \WP_User();
+        $user->set_cap( 'manage_woocommerce', false );
+
+        $result = Tool_Orders::call( array(), $user );
+
+        $this->assertArrayHasKey( 'error', $result );
+        $this->assertSame( 'insufficient_capability', $result['error'] );
+    }
+
     public function test_returns_results_when_woocommerce_present(): void {
         Functions\when( 'sanitize_text_field' )->returnArg();
 

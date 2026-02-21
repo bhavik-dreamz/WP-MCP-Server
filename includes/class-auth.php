@@ -34,7 +34,7 @@ class Auth {
                 return new \WP_Error( 'no_app_passwords', __( 'Application Passwords not available on this site', 'wp-mcp-server' ), array( 'status' => 500 ) );
             }
 
-            $user = wp_authenticate_application_password( $username, $password );
+            $user = wp_authenticate_application_password( null, $username, $password );
             if ( is_wp_error( $user ) ) {
                 return $user;
             }

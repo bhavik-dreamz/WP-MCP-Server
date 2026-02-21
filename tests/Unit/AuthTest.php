@@ -71,8 +71,32 @@ class AuthTest extends TestCase {
     }
 
     // ------------------------------------------------------------------
-    // Successful authentication
+    // Correct wp_authenticate_application_password call signature
     // ------------------------------------------------------------------
+
+    public function test_app_password_called_with_null_first_arg(): void {
+        // Verify the fixed call passes null as the first argument so
+        // wp_authenticate_application_password receives the correct three-arg
+        // signature expected by WordPress (input_user, username, password).
+        $spy = null;
+        Functions\when( 'wp_authenticate_application_password' )
+            ->alias( function () use ( &$spy ) {
+                $spy = func_get_args();
+                return new \WP_User();
+            } );
+
+        $request = new \WP_REST_Request();
+        $request->set_header( 'authorization', 'Basic ' . base64_encode( 'admin:secret' ) );
+
+        Auth::authenticate_request( $request );
+
+        $this->assertIsArray( $spy );
+        $this->assertCount( 3, $spy );
+        $this->assertNull( $spy[0], 'First argument must be null (input_user)' );
+        $this->assertSame( 'admin', $spy[1] );
+        $this->assertSame( 'secret', $spy[2] );
+    }
+
 
     public function test_valid_credentials_return_wp_user(): void {
         $user = new \WP_User();
