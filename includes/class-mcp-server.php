@@ -88,6 +88,75 @@ class MCP_Server {
                     ),
                 ),
             ),
+            'search_post_categories' => array(
+                'name' => 'search_post_categories',
+                'description' => 'Search WordPress post categories.',
+                'inputSchema' => array(
+                    'type' => 'object',
+                    'properties' => array(
+                        'query'     => array( 'type' => 'string',  'description' => 'Search keyword' ),
+                        'parent_id' => array( 'type' => 'integer', 'description' => 'Filter by parent category ID' ),
+                        'per_page'  => array( 'type' => 'integer', 'description' => 'Results per page (default: 20)' ),
+                    ),
+                ),
+            ),
+            'search_tags' => array(
+                'name' => 'search_tags',
+                'description' => 'Search WordPress post tags.',
+                'inputSchema' => array(
+                    'type' => 'object',
+                    'properties' => array(
+                        'query'    => array( 'type' => 'string',  'description' => 'Search keyword' ),
+                        'per_page' => array( 'type' => 'integer', 'description' => 'Results per page (default: 20)' ),
+                    ),
+                ),
+            ),
+            'create_post' => array(
+                'name' => 'create_post',
+                'description' => 'Create a WordPress post.',
+                'inputSchema' => array(
+                    'type' => 'object',
+                    'required' => array( 'title' ),
+                    'properties' => array(
+                        'title' => array( 'type' => 'string', 'description' => 'Post title (required)' ),
+                        'content' => array( 'type' => 'string', 'description' => 'Post content' ),
+                        'excerpt' => array( 'type' => 'string', 'description' => 'Post excerpt' ),
+                        'status' => array( 'type' => 'string', 'description' => 'draft/publish/pending/private (default: draft)' ),
+                        'slug' => array( 'type' => 'string', 'description' => 'Post slug' ),
+                        'author_id' => array( 'type' => 'integer', 'description' => 'Author user ID' ),
+                    ),
+                ),
+            ),
+            'create_page' => array(
+                'name' => 'create_page',
+                'description' => 'Create a WordPress page.',
+                'inputSchema' => array(
+                    'type' => 'object',
+                    'required' => array( 'title' ),
+                    'properties' => array(
+                        'title' => array( 'type' => 'string', 'description' => 'Page title (required)' ),
+                        'content' => array( 'type' => 'string', 'description' => 'Page content' ),
+                        'excerpt' => array( 'type' => 'string', 'description' => 'Page excerpt' ),
+                        'status' => array( 'type' => 'string', 'description' => 'draft/publish/pending/private (default: draft)' ),
+                        'slug' => array( 'type' => 'string', 'description' => 'Page slug' ),
+                        'author_id' => array( 'type' => 'integer', 'description' => 'Author user ID' ),
+                    ),
+                ),
+            ),
+            'create_category' => array(
+                'name' => 'create_category',
+                'description' => 'Create a WordPress category.',
+                'inputSchema' => array(
+                    'type' => 'object',
+                    'required' => array( 'name' ),
+                    'properties' => array(
+                        'name' => array( 'type' => 'string', 'description' => 'Category name (required)' ),
+                        'slug' => array( 'type' => 'string', 'description' => 'Category slug' ),
+                        'parent_id' => array( 'type' => 'integer', 'description' => 'Parent category term ID' ),
+                        'description' => array( 'type' => 'string', 'description' => 'Category description' ),
+                    ),
+                ),
+            ),
             'search_custom_post_types' => array(
                 'name' => 'search_custom_post_types',
                 'description' => 'Search allowed custom post types with optional meta filters.',
@@ -100,6 +169,23 @@ class MCP_Server {
                         'meta_filters' => array( 'type' => 'array',   'description' => 'Array of {key, value} meta filter objects' ),
                         'per_page'     => array( 'type' => 'integer', 'description' => 'Results per page (default: 10)' ),
                         'page'         => array( 'type' => 'integer', 'description' => 'Page number (default: 1)' ),
+                    ),
+                ),
+            ),
+            'create_custom_post_type' => array(
+                'name' => 'create_custom_post_type',
+                'description' => 'Create a custom post type entry (must be whitelisted in settings).',
+                'inputSchema' => array(
+                    'type' => 'object',
+                    'required' => array( 'post_type', 'title' ),
+                    'properties' => array(
+                        'post_type' => array( 'type' => 'string', 'description' => 'Custom post type slug (required)' ),
+                        'title' => array( 'type' => 'string', 'description' => 'Entry title (required)' ),
+                        'content' => array( 'type' => 'string', 'description' => 'Entry content' ),
+                        'excerpt' => array( 'type' => 'string', 'description' => 'Entry excerpt' ),
+                        'status' => array( 'type' => 'string', 'description' => 'draft/publish/pending/private (default: draft)' ),
+                        'slug' => array( 'type' => 'string', 'description' => 'Entry slug' ),
+                        'author_id' => array( 'type' => 'integer', 'description' => 'Author user ID' ),
                     ),
                 ),
             ),
@@ -119,6 +205,26 @@ class MCP_Server {
                     ),
                 ),
             ),
+            'create_product' => array(
+                'name' => 'create_product',
+                'description' => 'Create a WooCommerce product.',
+                'inputSchema' => array(
+                    'type' => 'object',
+                    'required' => array( 'name' ),
+                    'properties' => array(
+                        'name' => array( 'type' => 'string', 'description' => 'Product name (required)' ),
+                        'description' => array( 'type' => 'string', 'description' => 'Product description' ),
+                        'short_description' => array( 'type' => 'string', 'description' => 'Short description' ),
+                        'status' => array( 'type' => 'string', 'description' => 'draft/publish/pending/private (default: draft)' ),
+                        'regular_price' => array( 'type' => 'number', 'description' => 'Regular price' ),
+                        'sale_price' => array( 'type' => 'number', 'description' => 'Sale price' ),
+                        'sku' => array( 'type' => 'string', 'description' => 'Product SKU' ),
+                        'manage_stock' => array( 'type' => 'boolean', 'description' => 'Enable stock management' ),
+                        'stock_quantity' => array( 'type' => 'integer', 'description' => 'Stock quantity if manage_stock=true' ),
+                        'category_ids' => array( 'type' => 'array', 'description' => 'Array of product_cat term IDs' ),
+                    ),
+                ),
+            ),
             'search_product_categories' => array(
                 'name' => 'search_product_categories',
                 'description' => 'List or search WooCommerce product categories.',
@@ -128,6 +234,21 @@ class MCP_Server {
                         'query'     => array( 'type' => 'string',  'description' => 'Search keyword' ),
                         'parent_id' => array( 'type' => 'integer', 'description' => 'Filter by parent category ID' ),
                         'per_page'  => array( 'type' => 'integer', 'description' => 'Results per page (default: 20)' ),
+                    ),
+                ),
+            ),
+            'create_order' => array(
+                'name' => 'create_order',
+                'description' => 'Create a WooCommerce order with line items.',
+                'inputSchema' => array(
+                    'type' => 'object',
+                    'required' => array( 'line_items' ),
+                    'properties' => array(
+                        'customer_id' => array( 'type' => 'integer', 'description' => 'Customer user ID' ),
+                        'line_items' => array( 'type' => 'array', 'description' => 'Array of {product_id, quantity} objects' ),
+                        'billing' => array( 'type' => 'object', 'description' => 'Billing address fields' ),
+                        'shipping' => array( 'type' => 'object', 'description' => 'Shipping address fields' ),
+                        'status' => array( 'type' => 'string', 'description' => 'Order status (e.g. pending, processing)' ),
                     ),
                 ),
             ),
@@ -157,6 +278,21 @@ class MCP_Server {
                     ),
                 ),
             ),
+            'create_user' => array(
+                'name' => 'create_user',
+                'description' => 'Create a WordPress user account.',
+                'inputSchema' => array(
+                    'type' => 'object',
+                    'required' => array( 'username', 'email' ),
+                    'properties' => array(
+                        'username' => array( 'type' => 'string', 'description' => 'Username (required)' ),
+                        'email' => array( 'type' => 'string', 'description' => 'Email (required)' ),
+                        'password' => array( 'type' => 'string', 'description' => 'Password (optional; auto-generated if omitted)' ),
+                        'display_name' => array( 'type' => 'string', 'description' => 'Display name' ),
+                        'role' => array( 'type' => 'string', 'description' => 'User role (default: subscriber)' ),
+                    ),
+                ),
+            ),
             'recommend_products' => array(
                 'name' => 'recommend_products',
                 'description' => 'Recommend WooCommerce products using related, upsell, crosssell, bestseller, or new_arrivals strategies.',
@@ -176,7 +312,7 @@ class MCP_Server {
         foreach ( $all_tools as $key => $info ) {
             if ( empty( $enabled ) || in_array( $key, (array) $enabled, true ) ) {
                 // WooCommerce gating
-                if ( in_array( $key, array( 'search_products', 'search_product_categories', 'get_orders', 'get_order_details', 'recommend_products' ), true ) ) {
+                if ( in_array( $key, array( 'search_products', 'create_product', 'search_product_categories', 'create_order', 'get_orders', 'get_order_details', 'recommend_products' ), true ) ) {
                     if ( ! class_exists( 'WooCommerce' ) ) {
                         continue;
                     }
@@ -198,11 +334,20 @@ class MCP_Server {
         $mapping = array(
             'search_posts' => '\\WP_MCP\\Tools\\Tool_Posts',
             'search_pages' => '\\WP_MCP\\Tools\\Tool_Posts',
+            'search_post_categories' => '\\WP_MCP\\Tools\\Tool_Taxonomies',
+            'search_tags' => '\\WP_MCP\\Tools\\Tool_Taxonomies',
+            'create_post' => '\\WP_MCP\\Tools\\Tool_Create_Content',
+            'create_page' => '\\WP_MCP\\Tools\\Tool_Create_Content',
+            'create_category' => '\\WP_MCP\\Tools\\Tool_Create_Category',
             'search_custom_post_types' => '\\WP_MCP\\Tools\\Tool_CPT',
+            'create_custom_post_type' => '\\WP_MCP\\Tools\\Tool_Create_Content',
             'search_products' => '\\WP_MCP\\Tools\\Tool_Products',
+            'create_product' => '\\WP_MCP\\Tools\\Tool_Create_Product',
             'search_product_categories' => '\\WP_MCP\\Tools\\Tool_Categories',
+            'create_order' => '\\WP_MCP\\Tools\\Tool_Create_Order',
             'get_orders' => '\\WP_MCP\\Tools\\Tool_Orders',
             'get_order_details' => '\\WP_MCP\\Tools\\Tool_Order_Details',
+            'create_user' => '\\WP_MCP\\Tools\\Tool_Create_User',
             'recommend_products' => '\\WP_MCP\\Tools\\Tool_Recommendations',
         );
 
@@ -217,6 +362,26 @@ class MCP_Server {
 
         if ( ! is_callable( array( $class, 'call' ) ) ) {
             throw new \Exception( 'Tool does not implement call()' );
+        }
+
+        if ( $tool === 'search_pages' && empty( $args['post_type'] ) ) {
+            $args['post_type'] = 'page';
+        }
+
+        if ( $tool === 'search_post_categories' ) {
+            $args['taxonomy'] = 'category';
+        }
+
+        if ( $tool === 'search_tags' ) {
+            $args['taxonomy'] = 'post_tag';
+        }
+
+        if ( $tool === 'create_post' ) {
+            $args['post_type'] = 'post';
+        }
+
+        if ( $tool === 'create_page' ) {
+            $args['post_type'] = 'page';
         }
 
         // Call the tool with sanitized args and current user

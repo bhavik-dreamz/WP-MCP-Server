@@ -79,6 +79,8 @@ class MCPServerTest extends TestCase {
         $names = array_column( $result['tools'], 'name' );
         $this->assertContains( 'search_posts', $names );
         $this->assertContains( 'search_pages', $names );
+        $this->assertContains( 'search_post_categories', $names );
+        $this->assertContains( 'search_tags', $names );
         $this->assertContains( 'search_custom_post_types', $names );
         // WooCommerce tools must be absent.
         $this->assertNotContains( 'search_products', $names );

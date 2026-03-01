@@ -8,7 +8,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 $site_url = esc_url( get_option( 'wp_mcp_site_url', home_url() ) );
 $enabled = get_option( 'wp_mcp_enabled_tools', array() );
 $allowed_cpts = get_option( 'wp_mcp_allowed_cpts', array() );
-$all_tools = array( 'search_posts', 'search_pages', 'search_custom_post_types', 'search_products', 'search_product_categories', 'get_orders', 'get_order_details', 'recommend_products' );
+$all_tools = array( 'search_posts', 'search_pages', 'search_post_categories', 'search_tags', 'create_post', 'create_page', 'create_category', 'search_custom_post_types', 'create_custom_post_type', 'search_products', 'create_product', 'search_product_categories', 'create_order', 'get_orders', 'get_order_details', 'create_user', 'recommend_products' );
 ?>
 <div class="wrap">
     <h1><?php esc_html_e( 'WP MCP Server Settings', 'wp-mcp-server' ); ?></h1>
