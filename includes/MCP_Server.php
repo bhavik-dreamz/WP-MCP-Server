@@ -13,6 +13,21 @@ class MCP_Server {
     protected $server;
     protected $user;
 
+    /**
+     * Identifiers for tools that depend on WooCommerce APIs.
+     *
+     * @var string[]
+     */
+    protected static $woocommerce_tools = array(
+        'search_products',
+        'create_product',
+        'search_product_categories',
+        'create_order',
+        'get_orders',
+        'get_order_details',
+        'recommend_products',
+    );
+
     public function __construct( $wp_user ) {
         $this->user = $wp_user;
         // Instantiate SDK server if available, otherwise provide minimal fallback
@@ -58,11 +73,58 @@ class MCP_Server {
     }
 
     public function handle_tools_list( $params = array() ) {
-        // Build tools list from enabled options
-        $enabled = get_option( 'wp_mcp_enabled_tools', array() );
-        $allowed_cpts = get_option( 'wp_mcp_allowed_cpts', array() );
+        return array( 'tools' => self::get_available_tools() );
+    }
 
-        $all_tools = array(
+    public static function get_available_tools() {
+        $enabled = get_option( 'wp_mcp_enabled_tools', array() );
+        $tools = array();
+
+        foreach ( self::get_all_tools() as $key => $info ) {
+            if ( ! self::tool_is_enabled( $key, $enabled ) ) {
+                continue;
+            }
+
+            if ( ! self::tool_dependencies_available( $key ) ) {
+                continue;
+            }
+
+            $tools[] = $info;
+        }
+
+        return $tools;
+    }
+
+    public static function get_available_tool_names() {
+        $names = array();
+
+        foreach ( self::get_available_tools() as $tool ) {
+            if ( isset( $tool['name'] ) ) {
+                $names[] = $tool['name'];
+            }
+        }
+
+        return $names;
+    }
+
+    protected static function tool_is_enabled( $key, $enabled ) {
+        if ( empty( $enabled ) ) {
+            return true;
+        }
+
+        return in_array( $key, (array) $enabled, true );
+    }
+
+    protected static function tool_dependencies_available( $key ) {
+        if ( in_array( $key, self::$woocommerce_tools, true ) && ! class_exists( 'WooCommerce' ) ) {
+            return false;
+        }
+
+        return true;
+    }
+
+    protected static function get_all_tools() {
+        return array(
             'search_posts' => array(
                 'name' => 'search_posts',
                 'description' => 'Search WordPress posts by keyword with optional pagination.',
@@ -307,21 +369,6 @@ class MCP_Server {
                 ),
             ),
         );
-
-        $tools = array();
-        foreach ( $all_tools as $key => $info ) {
-            if ( empty( $enabled ) || in_array( $key, (array) $enabled, true ) ) {
-                // WooCommerce gating
-                if ( in_array( $key, array( 'search_products', 'create_product', 'search_product_categories', 'create_order', 'get_orders', 'get_order_details', 'recommend_products' ), true ) ) {
-                    if ( ! class_exists( 'WooCommerce' ) ) {
-                        continue;
-                    }
-                }
-                $tools[] = $info;
-            }
-        }
-
-        return array( 'tools' => $tools );
     }
 
     public function handle_tools_call( $params = array() ) {
